@@ -1,0 +1,16 @@
+* b.el
+Utility functions for buffer manipulation.
+** Functions
+- b-append ~(buffer string-or-buffer)~
+- b-erase ~(buffer)~
+- b-insert ~(buffer)~
+- b-prepend ~(buffer)~
+- b-string ~(buffer &key start end)~
+- b-string-with-property ~(buffer &key start end)~
+** Documentation and examples
+*** b-append ~(buffer string-or-buffer)~
+*** b-erase ~(buffer)~
+*** b-insert ~(buffer)~
+*** b-prepend ~(buffer)~
+*** b-string ~(buffer &key start end)~
+*** b-string-with-property ~(buffer &key start end)~
