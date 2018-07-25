@@ -58,13 +58,15 @@
     (goto-char (point-min))
     (insert (if (bufferp string-or-buffer)
                 (b-string-with-properties string-or-buffer)
-              string-or-buffer))))
+              string-or-buffer)))
+  buffer)
 
 (defun b-erase (buffer)
   "Delete the entire contents of the `BUFFER'."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
-    (erase-buffer)))
+    (erase-buffer))
+  buffer)
 
 (defun b-insert (buffer &rest string-or-buffer)
   "Insert `STRING-OR-BUFFER' to the `BUFFER'."
@@ -72,8 +74,9 @@
   (with-current-buffer buffer
     (cl-loop for s-or-b in string-or-buffer
              do (insert (if (bufferp s-or-b)
-                         (b-string-with-properties s-or-b)
-                       s-or-b)))))
+                            (b-string-with-properties s-or-b)
+                          s-or-b))))
+  buffer)
 
 (defun b-prepend (buffer string-or-buffer)
   "Insert `STRING-OR-BUFFER' to bottom of the `BUFFER'."
@@ -83,7 +86,8 @@
     (goto-char (point-max))
     (insert (if (bufferp string-or-buffer)
                 (b-string-with-properties string-or-buffer)
-              string-or-buffer))))
+              string-or-buffer)))
+  buffer)
 
 (cl-defun b-string (buffer &key start end)
   "Return the contents of part of the `BUFFER', without the text properties."
