@@ -61,6 +61,30 @@
               string-or-buffer)))
   buffer)
 
+(defun b-binary? (buffer)
+  "Is `BUFFER' contain binary content?"
+  (declare (pure t) (side-effect-free t))
+  (cl-check-type buffer buffer)
+  (eq 'no-conversion (b-coding-system buffer)))
+
+(defalias 'b-binary-p 'b-binary?)
+
+(defun b-blank? (buffer)
+  "Is `BUFFER' empty?"
+  (declare (pure t) (side-effect-free t))
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    (eq (point-min) (point-max))))
+
+(defalias 'b-blank-p 'b-blank?)
+
+(defun b-coding-system (buffer)
+  "Return `buffer-file-coding-system' by `BUFFER'."
+  (declare (pure t) (side-effect-free t))
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    buffer-file-coding-system))
+
 (defun b-erase (buffer)
   "Delete the entire contents of the `BUFFER'."
   (cl-check-type buffer buffer)

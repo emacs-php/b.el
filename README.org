@@ -2,6 +2,9 @@
 Utility functions for buffer manipulation.
 ** Functions
 - b-append ~(buffer string-or-buffer)~
+- b-binary?  ~(buffer)~
+- b-blank? ~(buffer)~
+- b-coding-system ~(buffer)~
 - b-erase ~(buffer)~
 - b-insert ~(buffer)~
 - b-prepend ~(buffer)~
@@ -9,6 +12,9 @@ Utility functions for buffer manipulation.
 - b-string-with-property ~(buffer &key start end)~
 ** Documentation and examples
 *** b-append ~(buffer string-or-buffer)~
+*** b-binary?  ~(buffer)~
+*** b-blank? ~(buffer)~
+*** b-coding-system ~(buffer)~
 *** b-erase ~(buffer)~
 *** b-insert ~(buffer)~
 *** b-prepend ~(buffer)~
