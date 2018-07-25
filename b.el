@@ -87,6 +87,7 @@
 
 (cl-defun b-string (buffer &key start end)
   "Return the contents of part of the `BUFFER', without the text properties."
+  (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (cl-assert (or (null start) (eq 'point start) (integerp start)))
   (cl-assert (or (null end) (eq 'point end) (integerp end)))
@@ -101,6 +102,7 @@
 
 (cl-defun b-string-with-properties (buffer &key start end)
   "Return the contents of part of the `BUFFER' as a string."
+  (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (cl-assert (or (null start) (eq 'point start) (integerp start)))
   (cl-assert (or (null end) (eq 'point end) (integerp end)))
