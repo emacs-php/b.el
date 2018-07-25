@@ -31,8 +31,11 @@
 ;; ## Functions
 ;;
 ;; - b-append(buffer string-or-buffer)
+;; - b-binary?  ~(buffer)~
+;; - b-blank? ~(buffer)~
+;; - b-coding-system ~(buffer)~
 ;; - b-erase(buffer)
-;; - b-insert(buffer)
+;; - b-insert(buffer &rest string-or-buffer)
 ;; - b-prepend(buffer)
 ;; - b-string(buffer &key start end)
 ;; - b-string-with-property(buffer &key start end)
