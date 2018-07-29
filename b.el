@@ -32,6 +32,7 @@
 ;; ## Functions
 ;;
 ;; - b-append(buffer string-or-buffer)
+;; - b-apply-rcs-patch(target-buffer patch-buffer)
 ;; - b-binary?(buffer)
 ;; - b-blank?(buffer)
 ;; - b-coding-system(buffer)
@@ -145,7 +146,7 @@
 
 ;; gofmt apply-rcs-patch Function
 ;; These functions are copied by go-mode(gofmt).
-(defun go--delete-whole-line (&optional arg)
+(defun b--delete-whole-line (&optional arg)
   "Delete the current line without putting it in the `kill-ring'.
 Derived from function `kill-whole-line'.  ARG is defined as for that
 function."
@@ -171,9 +172,9 @@ function."
          (delete-region (progn (forward-visible-line 0) (point))
                         (progn (forward-visible-line arg) (point))))))
 
-(defun go--apply-rcs-patch (patch-buffer)
-  "Apply an RCS-formatted diff from PATCH-BUFFER to the current buffer."
-  (let ((target-buffer (current-buffer))
+(defun b-apply-rcs-patch (target-buffer patch-buffer)
+  "Apply an RCS-formatted diff from PATCH-BUFFER to the TARGET-BUFFER."
+  (let (
         ;; Relative offset between buffer line numbers and line numbers
         ;; in patch.
         ;;
@@ -191,7 +192,7 @@ function."
         (goto-char (point-min))
         (while (not (eobp))
           (unless (looking-at "^\\([ad]\\)\\([0-9]+\\) \\([0-9]+\\)")
-            (error "Invalid rcs patch or internal error in go--apply-rcs-patch"))
+            (error "Invalid rcs patch or internal error in b-apply-rcs-patch"))
           (forward-line)
           (let ((action (match-string 1))
                 (from (string-to-number (match-string 2)))
@@ -211,11 +212,11 @@ function."
                 (goto-char (point-min))
                 (forward-line (1- (- from line-offset)))
                 (cl-incf line-offset len)
-                (go--delete-whole-line len)))
+                (b--delete-whole-line len)))
              (t
-              (error "Invalid rcs patch or internal error in go--apply-rcs-patch")))))))
+              (error "Invalid rcs patch or internal error in b--apply-rcs-patch")))))))
     (move-to-column column)))
-
+;; Copy of go-mode.el ends here
 
 (provide 'b)
 ;;; b.el ends here

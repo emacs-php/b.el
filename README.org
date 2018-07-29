@@ -1,6 +1,7 @@
 * b.el
 Utility functions for buffer manipulation.
 ** Functions
+- b-apply-rcs-patch ~(target-buffer patch-buffer)~
 - b-append ~(buffer string-or-buffer)~
 - b-binary?  ~(buffer)~
 - b-blank? ~(buffer)~
@@ -11,6 +12,7 @@ Utility functions for buffer manipulation.
 - b-string ~(buffer &key start end)~
 - b-string-with-property ~(buffer &key start end)~
 ** Documentation and examples
+*** b-apply-rcs-patch ~(target-buffer patch-buffer)~
 *** b-append ~(buffer string-or-buffer)~
 *** b-binary?  ~(buffer)~
 *** b-blank? ~(buffer)~
