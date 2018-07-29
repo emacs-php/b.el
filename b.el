@@ -145,10 +145,6 @@
 
 ;; gofmt apply-rcs-patch Function
 ;; These functions are copied by go-mode(gofmt).
-(defun go--goto-line (line)
-  (goto-char (point-min))
-  (forward-line (1- line)))
-
 (defun go--delete-whole-line (&optional arg)
   "Delete the current line without putting it in the `kill-ring'.
 Derived from function `kill-whole-line'.  ARG is defined as for that
@@ -212,7 +208,8 @@ function."
                     (insert text)))))
              ((equal action "d")
               (with-current-buffer target-buffer
-                (go--goto-line (- from line-offset))
+                (goto-char (point-min))
+                (forward-line (1- (- from line-offset)))
                 (cl-incf line-offset len)
                 (go--delete-whole-line len)))
              (t
