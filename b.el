@@ -34,6 +34,7 @@
 ;; - b-binary?(buffer)
 ;; - b-blank?(buffer)
 ;; - b-coding-system(buffer)
+;; - b-duplicate(buffer)
 ;; - b-erase(buffer)
 ;; - b-insert(buffer &rest string-or-buffer)
 ;; - b-prepend(buffer string-or-buffer)
@@ -87,6 +88,16 @@
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     buffer-file-coding-system))
+
+(cl-defun b-duplicate (buffer target-buffer &key start end)
+  "Duplicate contents of part of the `BUFFER' to `TARGET-BUFFER', without the text properties."
+  (declare (pure t) (side-effect-free t))
+  (cl-check-type buffer buffer)
+  (cl-assert (or (null start) (eq 'point start) (integerp start)))
+  (cl-assert (or (null end) (eq 'point end) (integerp end)))
+  (with-current-buffer target-buffer
+    (insert (b-string buffer :start start :end end)))
+  target-buffer)
 
 (defun b-erase (buffer)
   "Delete the entire contents of the `BUFFER'."

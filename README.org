@@ -5,6 +5,7 @@ Utility functions for buffer manipulation.
 - b-binary?  ~(buffer)~
 - b-blank? ~(buffer)~
 - b-coding-system ~(buffer)~
+- b-duplicate ~(buffer target-buffer &key start end)~
 - b-erase ~(buffer)~
 - b-insert ~(buffer &rest string-or-buffer)~
 - b-prepend ~(buffer string-or-buffer)~
@@ -15,6 +16,7 @@ Utility functions for buffer manipulation.
 *** b-binary?  ~(buffer)~
 *** b-blank? ~(buffer)~
 *** b-coding-system ~(buffer)~
+*** b-duplicate ~(buffer target-buffer &key start end)~
 *** b-erase ~(buffer)~
 *** b-insert ~(buffer &rest string-or-buffer)~
 *** b-prepend ~(buffer string-or-buffer)~
