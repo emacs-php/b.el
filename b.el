@@ -62,11 +62,11 @@
 
 ;; Public API functions
 (defun b-append (buffer string-or-buffer)
-  "Insert `STRING-OR-BUFFER' to head of the `BUFFER'."
+  "Insert `STRING-OR-BUFFER' to bottom of the `BUFFER'."
   (cl-check-type buffer buffer)
   (cl-check-type string-or-buffer (or string buffer))
   (with-current-buffer buffer
-    (goto-char (point-min))
+    (goto-char (point-max))
     (insert (if (bufferp string-or-buffer)
                 (b-string-with-properties string-or-buffer)
               string-or-buffer)))
@@ -124,11 +124,11 @@
   buffer)
 
 (defun b-prepend (buffer string-or-buffer)
-  "Insert `STRING-OR-BUFFER' to bottom of the `BUFFER'."
+  "Insert `STRING-OR-BUFFER' to head of the `BUFFER'."
   (cl-check-type buffer buffer)
   (cl-check-type string-or-buffer (or string buffer))
   (with-current-buffer buffer
-    (goto-char (point-max))
+    (goto-char (point-min))
     (insert (if (bufferp string-or-buffer)
                 (b-string-with-properties string-or-buffer)
               string-or-buffer)))
