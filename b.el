@@ -37,6 +37,10 @@
 ;; - b-duplicate(buffer)
 ;; - b-erase(buffer)
 ;; - b-insert(buffer &rest string-or-buffer)
+;; - b-move(buffer position &key bytes)
+;; - b-move-backward(buffer backward-pos &key bytes)
+;; - b-move-bytes(buffer position)
+;; - b-move-forward(buffer forward-pos &key bytes)
 ;; - b-prepend(buffer string-or-buffer)
 ;; - b-string(buffer &key start end)
 ;; - b-string-with-property(buffer &key start end)
@@ -121,6 +125,33 @@
              do (insert (if (bufferp s-or-b)
                             (b-string-with-properties s-or-b)
                           s-or-b))))
+  buffer)
+
+(cl-defun b-move (buffer position &key bytes)
+  "Set point cursor to `POSITION' in `BUFFER'."
+  (cl-check-type buffer buffer)
+  (cl-check-type position integer)
+  (cl-check-type bytes boolean)
+  (with-current-buffer buffer
+    (goto-char (if bytes (position-bytes position) position)))
+  buffer)
+
+(cl-defun b-move-backward (buffer backward-pos &key bytes)
+  "Set point cursor backward `BACKWARD-POS' from current point in `BUFFER'."
+  (b-move-backward buffer (* -1 backward-pos) :bytes bytes))
+
+(defun b-move-bytes (buffer position)
+  "Set point cursor to `POSITION' in `BUFFER'."
+  (b-move buffer position :bytes t))
+
+(cl-defun b-move-forward (buffer forward-pos &key bytes)
+  "Set point cursor forward `FORWARD-POS' from current point in `BUFFER'."
+  (cl-check-type buffer buffer)
+  (cl-check-type forward-pos integer)
+  (cl-check-type bytes boolean)
+  (with-current-buffer buffer
+    (let ((position (+ forward-pos (point))))
+      (goto-char (if bytes (position-bytes position) position))))
   buffer)
 
 (defun b-prepend (buffer string-or-buffer)
