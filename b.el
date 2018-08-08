@@ -33,6 +33,7 @@
 ;; - b-append(buffer string-or-buffer)
 ;; - b-binary?(buffer)
 ;; - b-blank?(buffer)
+;; - b-bytes-position(buffer)
 ;; - b-coding-system(buffer)
 ;; - b-duplicate(buffer)
 ;; - b-erase(buffer)
@@ -41,6 +42,7 @@
 ;; - b-move-backward(buffer backward-pos &key bytes)
 ;; - b-move-bytes(buffer position)
 ;; - b-move-forward(buffer forward-pos &key bytes)
+;; - b-position(buffer)
 ;; - b-prepend(buffer string-or-buffer)
 ;; - b-string(buffer &key start end)
 ;; - b-string-with-property(buffer &key start end)
@@ -92,6 +94,12 @@
     (eq (point-min) (point-max))))
 
 (defalias 'b-blank-p 'b-blank?)
+
+(defun b-bytes-position (buffer)
+  "Return bytes position of cursor point in `BUFFER'."
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    (position-bytes (point))))
 
 (defun b-coding-system (buffer)
   "Return `buffer-file-coding-system' by `BUFFER'."
@@ -153,6 +161,12 @@
     (let ((position (+ forward-pos (point))))
       (goto-char (if bytes (position-bytes position) position))))
   buffer)
+
+(defun b-position (buffer)
+  "Return position of cursor point in `BUFFER'."
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    (point)))
 
 (defun b-prepend (buffer string-or-buffer)
   "Insert `STRING-OR-BUFFER' to head of the `BUFFER'."
