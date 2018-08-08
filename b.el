@@ -33,11 +33,13 @@
 ;; - b-append(buffer string-or-buffer)
 ;; - b-binary?(buffer)
 ;; - b-blank?(buffer)
+;; - b-bytes-length(buffer)
 ;; - b-bytes-position(buffer)
 ;; - b-coding-system(buffer)
 ;; - b-duplicate(buffer)
 ;; - b-erase(buffer)
 ;; - b-insert(buffer &rest string-or-buffer)
+;; - b-length(buffer)
 ;; - b-move(buffer position &key bytes)
 ;; - b-move-backward(buffer backward-pos &key bytes)
 ;; - b-move-bytes(buffer position)
@@ -95,6 +97,14 @@
 
 (defalias 'b-blank-p 'b-blank?)
 
+(defun b-bytes-length (buffer)
+  "Return bytes length of `BUFFER'."
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    (save-restriction
+      (widen)
+      (position-bytes (point-max)))))
+
 (defun b-bytes-position (buffer)
   "Return bytes position of cursor point in `BUFFER'."
   (cl-check-type buffer buffer)
@@ -134,6 +144,14 @@
                             (b-string-with-properties s-or-b)
                           s-or-b))))
   buffer)
+
+(defun b-length (buffer)
+  "Return chars length of `BUFFER'."
+  (cl-check-type buffer buffer)
+  (with-current-buffer buffer
+    (save-restriction
+      (widen)
+      (point-max))))
 
 (cl-defun b-move (buffer position &key bytes)
   "Set point cursor to `POSITION' in `BUFFER'."
