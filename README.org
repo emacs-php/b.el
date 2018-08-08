@@ -13,12 +13,136 @@ Utility functions for buffer manipulation.
 - b-string-with-property ~(buffer &key start end)~
 ** Documentation and examples
 *** b-append ~(buffer string-or-buffer)~
+Insert ~string-or-buffer~ to bottom of the ~buffer~.
+#+BEGIN_SRC emacs-lisp
+(let ((x (get-buffer-create "buf-1"))
+      (y "yyy"))
+  (with-current-buffer x
+    (erase-buffer)
+    (insert "XXX"))
+  (b-append x y)
+  (b-string x)) ; => "XXXyyy"
+#+END_SRC
 *** b-binary?  ~(buffer)~
+#+BEGIN_SRC emacs-lisp
+(let ((f (find-file-noselect "~/f.png")))
+  (b-binary? f)) ; => t
+
+(let ((f (find-file-noselect "~/a.txt")))
+  (b-binary? f)) ; => nil
+#+END_SRC
 *** b-blank? ~(buffer)~
+#+BEGIN_SRC emacs-lisp
+(with-temp-buffer
+  (b-blank? (current-buffer))) ; => t
+
+(with-temp-buffer
+  (insert "yey!")
+  (b-blank? (current-buffer))) ; => nil
+#+END_SRC
 *** b-coding-system ~(buffer)~
+#+BEGIN_SRC emacs-lisp
+(let ((f (find-file-noselect "~/a.txt")))
+  (b-coding-system f)) ; => utf-8-unix
+
+(let ((f (find-file-noselect "~/f.png")))
+  (b-coding-system f)) ; => no-conversion
+#+END_SRC
 *** b-duplicate ~(buffer target-buffer &key start end)~
+#+BEGIN_SRC emacs-lisp
+(with-temp-buffer
+  (let ((new-buffer (get-buffer-create "buf-2"))
+        (orig (current-buffer)))
+    (insert "0123456789")
+
+    (b-duplicate orig new-buffer)
+    (b-string new-buffer) ;=> "0123456789"
+
+    (b-erase new-buffer)
+
+    (b-duplicate orig new-buffer)
+    (b-string new-buffer :start 6) ;=> "56789"
+
+    (b-erase new-buffer)
+
+    (b-duplicate orig new-buffer)
+    (b-string new-buffer :end 6) ;=> "01234"
+
+    (b-erase new-buffer)
+
+    (b-duplicate orig new-buffer)
+    (b-string new-buffer :start 4 :end 8) ;=> "3456"
+
+    ))
+#+END_SRC
 *** b-erase ~(buffer)~
+#+BEGIN_SRC emacs-lisp
+(let ((buf (get-buffer-create "buf-3")))
+  (with-current-buffer buf
+    (insert "ababababa"))
+  (b-string buf) ; => "ababababa"
+
+  (b-erase buf)
+
+  (b-string buf) ;=> ""
+  )
+#+END_SRC
 *** b-insert ~(buffer &rest string-or-buffer)~
+#+BEGIN_SRC emacs-lisp
+(with-temp-buffer
+  (let ((buf (get-buffer-create "buf-4"))
+        (tmp (current-buffer)))
+
+    ;; The following idiom is abbreviated to `b-insert'
+    (with-current-buffer buf
+      (insert "12345"))
+    (b-string buf) ; => "12345"
+
+    (b-insert buf "aaaaa")
+    (b-string buf) ;=> "12345aaaaa"
+
+    (b-insert buf "67890" "bbbbb")
+    (b-string buf) ;=> "12345aaaaa67890bbbbb"
+
+    (b-insert tmp "zzzzz")
+
+    (b-insert buf " | " tmp)
+    (b-string buf) ;=> "12345aaaaa67890bbbbb | zzzzz"
+    ))
+#+END_SRC
 *** b-prepend ~(buffer string-or-buffer)~
+#+BEGIN_SRC emacs-lisp
+(let ((x (get-buffer-create "buf-1"))
+      (y "yyy"))
+  (with-current-buffer x
+    (erase-buffer)
+    (insert "XXX"))
+  (b-prepend x y)
+  (b-string x)) ; => "yyyXXX"
+#+END_SRC
 *** b-string ~(buffer &key start end)~
-*** b-string-with-property ~(buffer &key start end)~
+#+BEGIN_SRC emacs-lisp
+(let ((buf (get-buffer-create "buf-4")))
+
+  (b-erase buf)
+  (b-string buf) ;=>
+
+  (b-insert buf "nurupo")
+  (b-string buf) ; => "nurupo"
+  (b-string buf :end 3) ; => "nu"
+  (b-string buf :start 3) ; => "rupo"
+  (b-string buf :start 3 :end 5) ; => "ru"
+  )
+#+END_SRC
+*** b-string-with-properties ~(buffer &key start end)~
+#+BEGIN_SRC emacs-lisp
+(let ((buf (get-buffer-create "buf-5")))
+  (b-erase buf)
+
+  (b-insert buf (propertize "Red" 'face 'bold 'foreground "red"))
+
+  (b-string buf) ; => "Red"
+  (b-string-with-properties buf) ; => #("Red" 0 3 (foreground "red" face bold))
+  )
+#+END_SRC
+Red
