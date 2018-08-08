@@ -44,12 +44,19 @@
 
 ;;; Code:
 (require 'cl-lib)
-
+
+;; Constants
+(defconst b-point-keywords
+  '(point
+    point-1
+    point+1))
 
 ;; Internal utility function
 (defun b--point (sym-or-integer fallback)
   "Return point by `SYM-OR-INTEGER' or call `FALLBACK' function."
   (cond ((eq sym-or-integer 'point) (point))
+        ((eq sym-or-integer 'point-1) (1- (point)))
+        ((eq sym-or-integer 'point+1) (1+ (point)))
         ((integerp sym-or-integer) sym-or-integer)
         (t (funcall fallback))))
 
@@ -93,8 +100,8 @@
   "Duplicate contents of part of the `BUFFER' to `TARGET-BUFFER', without the text properties."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
-  (cl-assert (or (null start) (eq 'point start) (integerp start)))
-  (cl-assert (or (null end) (eq 'point end) (integerp end)))
+  (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
+  (cl-assert (or (null end) (memq end b-point-keywords) (integerp end)))
   (with-current-buffer target-buffer
     (insert (b-string buffer :start start :end end)))
   target-buffer)
@@ -131,8 +138,8 @@
   "Return the contents of part of the `BUFFER', without the text properties."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
-  (cl-assert (or (null start) (eq 'point start) (integerp start)))
-  (cl-assert (or (null end) (eq 'point end) (integerp end)))
+  (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
+  (cl-assert (or (null end) (memq end b-point-keywords) (integerp end)))
   (with-current-buffer buffer
     (buffer-substring-no-properties (b--point start 'point-min)
                                     (b--point end 'point-max))))
@@ -146,8 +153,8 @@
   "Return the contents of part of the `BUFFER' as a string."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
-  (cl-assert (or (null start) (eq 'point start) (integerp start)))
-  (cl-assert (or (null end) (eq 'point end) (integerp end)))
+  (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
+  (cl-assert (or (null end) (memq end b-point-keywords) (integerp end)))
   (with-current-buffer buffer
     (buffer-substring (b--point start 'point-min)
                       (b--point end 'point-max))))
