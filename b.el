@@ -6,7 +6,7 @@
 ;; Created: 25 Jul 2018
 ;; Version: 0.0.1
 ;; Keywords: lisp, buffer
-;; Package-Requires: ((emacs "24.3") (cl-lib "0.5"))
+;; Package-Requires: ((emacs "24.3"))
 ;; URL: https://github.com/emacs-php/b.el
 ;; License: GPL-3.0-or-later
 
@@ -61,7 +61,7 @@
 
 ;; Internal utility function
 (defun b--point (sym-or-integer fallback)
-  "Return point by `SYM-OR-INTEGER' or call `FALLBACK' function."
+  "Return point by SYM-OR-INTEGER or call FALLBACK function."
   (cond ((eq sym-or-integer 'point) (point))
         ((eq sym-or-integer 'point-1) (1- (point)))
         ((eq sym-or-integer 'point+1) (1+ (point)))
@@ -70,7 +70,7 @@
 
 ;; Public API functions
 (defun b-append (buffer string-or-buffer)
-  "Insert `STRING-OR-BUFFER' to bottom of the `BUFFER'."
+  "Insert STRING-OR-BUFFER to bottom of the BUFFER."
   (cl-check-type buffer buffer)
   (cl-check-type string-or-buffer (or string buffer))
   (with-current-buffer buffer
@@ -81,7 +81,7 @@
   buffer)
 
 (defun b-binary? (buffer)
-  "Is `BUFFER' contain binary content?"
+  "Is BUFFER contain binary content?"
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (eq 'no-conversion (b-coding-system buffer)))
@@ -89,7 +89,7 @@
 (defalias 'b-binary-p 'b-binary?)
 
 (defun b-blank? (buffer)
-  "Is `BUFFER' empty?"
+  "Is BUFFER empty?"
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
@@ -98,7 +98,7 @@
 (defalias 'b-blank-p 'b-blank?)
 
 (defun b-bytes-length (buffer)
-  "Return bytes length of `BUFFER'."
+  "Return bytes length of BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (save-restriction
@@ -106,20 +106,20 @@
       (position-bytes (point-max)))))
 
 (defun b-bytes-position (buffer)
-  "Return bytes position of cursor point in `BUFFER'."
+  "Return bytes position of cursor point in BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (position-bytes (point))))
 
 (defun b-coding-system (buffer)
-  "Return `buffer-file-coding-system' by `BUFFER'."
+  "Return `buffer-file-coding-system' by BUFFER."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     buffer-file-coding-system))
 
 (cl-defun b-duplicate (buffer target-buffer &key start end)
-  "Duplicate contents of part of the `BUFFER' to `TARGET-BUFFER', without the text properties."
+  "Duplicate the contents of BUFFER from START to END into TARGET-BUFFER."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
@@ -129,14 +129,14 @@
   target-buffer)
 
 (defun b-erase (buffer)
-  "Delete the entire contents of the `BUFFER'."
+  "Delete the entire contents of the BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (erase-buffer))
   buffer)
 
 (defun b-insert (buffer &rest string-or-buffer)
-  "Insert `STRING-OR-BUFFER' to the `BUFFER'."
+  "Insert STRING-OR-BUFFER to the BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (cl-loop for s-or-b in string-or-buffer
@@ -146,7 +146,7 @@
   buffer)
 
 (defun b-length (buffer)
-  "Return chars length of `BUFFER'."
+  "Return chars length of BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (save-restriction
@@ -154,7 +154,7 @@
       (point-max))))
 
 (cl-defun b-move (buffer position &key bytes)
-  "Set point cursor to `POSITION' in `BUFFER'."
+  "Set point cursor to POSITION in BUFFER."
   (cl-check-type buffer buffer)
   (cl-check-type position integer)
   (cl-check-type bytes boolean)
@@ -163,15 +163,15 @@
   buffer)
 
 (cl-defun b-move-backward (buffer backward-pos &key bytes)
-  "Set point cursor backward `BACKWARD-POS' from current point in `BUFFER'."
+  "Set point cursor backward BACKWARD-POS from current point in BUFFER."
   (b-move-backward buffer (* -1 backward-pos) :bytes bytes))
 
 (defun b-move-bytes (buffer position)
-  "Set point cursor to `POSITION' in `BUFFER'."
+  "Set point cursor to POSITION in BUFFER."
   (b-move buffer position :bytes t))
 
 (cl-defun b-move-forward (buffer forward-pos &key bytes)
-  "Set point cursor forward `FORWARD-POS' from current point in `BUFFER'."
+  "Set point cursor forward FORWARD-POS from current point in BUFFER."
   (cl-check-type buffer buffer)
   (cl-check-type forward-pos integer)
   (cl-check-type bytes boolean)
@@ -181,13 +181,13 @@
   buffer)
 
 (defun b-position (buffer)
-  "Return position of cursor point in `BUFFER'."
+  "Return position of cursor point in BUFFER."
   (cl-check-type buffer buffer)
   (with-current-buffer buffer
     (point)))
 
 (defun b-prepend (buffer string-or-buffer)
-  "Insert `STRING-OR-BUFFER' to head of the `BUFFER'."
+  "Insert STRING-OR-BUFFER to head of the BUFFER."
   (cl-check-type buffer buffer)
   (cl-check-type string-or-buffer (or string buffer))
   (with-current-buffer buffer
@@ -198,7 +198,7 @@
   buffer)
 
 (cl-defun b-string (buffer &key start end)
-  "Return the contents of part of the `BUFFER', without the text properties."
+  "Return the contents of BUFFER from START to END, without any text properties."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
@@ -213,7 +213,7 @@
 (defalias 'b-string-no-properties 'b-string)
 
 (cl-defun b-string-with-properties (buffer &key start end)
-  "Return the contents of part of the `BUFFER' as a string."
+  "Return the contents of BUFFER from START to END as a string."
   (declare (pure t) (side-effect-free t))
   (cl-check-type buffer buffer)
   (cl-assert (or (null start) (memq start b-point-keywords) (integerp start)))
