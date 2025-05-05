@@ -3,6 +3,7 @@
 ;; Copyright (C) 2018  Friends of Emacs-PHP development
 
 ;; Author: USAMI Kenta <tadsan@zonu.me>
+;;         Dominik Honnef
 ;; Created: 25 Jul 2018
 ;; Version: 0.0.1
 ;; Keywords: lisp, buffer
@@ -31,6 +32,7 @@
 ;; ## Functions
 ;;
 ;; - b-append(buffer string-or-buffer)
+;; - b-apply-rcs-patch(target-buffer patch-buffer)
 ;; - b-binary?(buffer)
 ;; - b-blank?(buffer)
 ;; - b-bytes-length(buffer)
@@ -221,6 +223,81 @@
   (with-current-buffer buffer
     (buffer-substring (b--point start 'point-min)
                       (b--point end 'point-max))))
+
+
+;; gofmt apply-rcs-patch Function
+;; These functions are copied by go-mode(gofmt).
+(defun b--delete-whole-line (&optional arg)
+  "Delete the current line without putting it in the `kill-ring'.
+Derived from function `kill-whole-line'.  ARG is defined as for that
+function."
+  (setq arg (or arg 1))
+  (if (and (> arg 0)
+           (eobp)
+           (save-excursion (forward-visible-line 0) (eobp)))
+      (signal 'end-of-buffer nil))
+  (if (and (< arg 0)
+           (bobp)
+           (save-excursion (end-of-visible-line) (bobp)))
+      (signal 'beginning-of-buffer nil))
+  (cond ((zerop arg)
+         (delete-region (progn (forward-visible-line 0) (point))
+                        (progn (end-of-visible-line) (point))))
+        ((< arg 0)
+         (delete-region (progn (end-of-visible-line) (point))
+                        (progn (forward-visible-line (1+ arg))
+                               (unless (bobp)
+                                 (backward-char))
+                               (point))))
+        (t
+         (delete-region (progn (forward-visible-line 0) (point))
+                        (progn (forward-visible-line arg) (point))))))
+
+(defun b-apply-rcs-patch (target-buffer patch-buffer)
+  "Apply an RCS-formatted diff from PATCH-BUFFER to the TARGET-BUFFER."
+  (let (
+        ;; Relative offset between buffer line numbers and line numbers
+        ;; in patch.
+        ;;
+        ;; Line numbers in the patch are based on the source file, so
+        ;; we have to keep an offset when making changes to the
+        ;; buffer.
+        ;;
+        ;; Appending lines decrements the offset (possibly making it
+        ;; negative), deleting lines increments it. This order
+        ;; simplifies the forward-line invocations.
+        (line-offset 0)
+        (column (current-column)))
+    (save-excursion
+      (with-current-buffer patch-buffer
+        (goto-char (point-min))
+        (while (not (eobp))
+          (unless (looking-at "^\\([ad]\\)\\([0-9]+\\) \\([0-9]+\\)")
+            (error "Invalid rcs patch or internal error in b-apply-rcs-patch"))
+          (forward-line)
+          (let ((action (match-string 1))
+                (from (string-to-number (match-string 2)))
+                (len  (string-to-number (match-string 3))))
+            (cond
+             ((equal action "a")
+              (let ((start (point)))
+                (forward-line len)
+                (let ((text (buffer-substring start (point))))
+                  (with-current-buffer target-buffer
+                    (cl-decf line-offset len)
+                    (goto-char (point-min))
+                    (forward-line (- from len line-offset))
+                    (insert text)))))
+             ((equal action "d")
+              (with-current-buffer target-buffer
+                (goto-char (point-min))
+                (forward-line (1- (- from line-offset)))
+                (cl-incf line-offset len)
+                (b--delete-whole-line len)))
+             (t
+              (error "Invalid rcs patch or internal error in b--apply-rcs-patch")))))))
+    (move-to-column column)))
+;; Copy of go-mode.el ends here
 
 (provide 'b)
 ;;; b.el ends here
